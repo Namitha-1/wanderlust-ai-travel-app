@@ -39,6 +39,7 @@ export default function FamousPlacesSection({ destination, onAddToItinerary }) {
                 <img
                   src={place.image}
                   alt={place.name}
+                  onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop'; }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />

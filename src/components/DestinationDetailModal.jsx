@@ -60,6 +60,7 @@ export default function DestinationDetailModal({
             <img
               src={destination.heroImage}
               alt={destination.name}
+              onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop'; }}
               className="w-full h-full object-cover filter brightness-90"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent" />

@@ -174,6 +174,7 @@ export default function DestinationExplorer({
                 <img
                   src={dest.heroImage}
                   alt={dest.name}
+                  onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop'; }}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
                 
