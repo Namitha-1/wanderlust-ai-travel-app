@@ -632,7 +632,7 @@ export const DESTINATIONS = [
     reviewsCount: 1850,
     budget: '$$$',
     bestTimeToVisit: 'March - May & September - November',
-    heroImage: 'https://images.unsplash.com/photo-1579606032822-6b95764d0a1b?q=80&w=1600&auto=format&fit=crop',
+    heroImage: 'https://images.unsplash.com/photo-1501238295300-9fb4d42b00a9?q=80&w=1600&auto=format&fit=crop',
     videoUrl: 'https://cdn.coverr.co/videos/coverr-flying-over-desert-dunes-5654/1080p.mp4',
     overview: 'Petra is a famous archaeological site in Jordan’s southwestern desert. Dating to around 300 B.C., it was the capital of the Nabataean Kingdom. Accessed via a narrow canyon called Al-Siq.',
     quickStats: {
@@ -646,7 +646,7 @@ export const DESTINATIONS = [
         id: 'al-khazneh',
         name: 'Al-Khazneh (The Treasury)',
         category: 'Ancient Architecture',
-        image: 'https://images.unsplash.com/photo-1579606032822-6b95764d0a1b?q=80&w=1000&auto=format&fit=crop',
+        image: 'https://images.unsplash.com/photo-1501238295300-9fb4d42b00a9?q=80&w=1000&auto=format&fit=crop',
         rating: 4.99,
         openingHours: '6:00 AM - 6:00 PM',
         description: 'An elaborate 40-meter-high rock-cut temple carved directly out of the sandstone cliff face.',
