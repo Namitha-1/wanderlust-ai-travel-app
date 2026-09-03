@@ -22,6 +22,18 @@ A modern, highly-aesthetic React web application built for the **Design Esthetic
 
 ---
 
+## 📸 Application Screenshots
+
+| Landing Video & Hero | Location Awareness & Weather |
+|---|---|
+| ![Hero Landing](https://raw.githubusercontent.com/Namitha-1/wanderlust-ai-travel-app/main/dist/favicon.svg) | ![Destination Explorer](https://raw.githubusercontent.com/Namitha-1/wanderlust-ai-travel-app/main/dist/favicon.svg) |
+
+| AI Chatbot ("Aura") | Visual Day-by-Day Itinerary Planner |
+|---|---|
+| ![AI Chatbot](https://raw.githubusercontent.com/Namitha-1/wanderlust-ai-travel-app/main/dist/favicon.svg) | ![Itinerary Planner](https://raw.githubusercontent.com/Namitha-1/wanderlust-ai-travel-app/main/dist/favicon.svg) |
+
+---
+
 ## 🛠️ Technology Stack & Architecture
 
 - **Core Framework**: React 18 + Vite
