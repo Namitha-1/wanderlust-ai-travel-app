@@ -10,7 +10,11 @@ export function getGeminiApiKey(customKey = null) {
 /**
  * Ask Gemini AI Chatbot a conversational question about a destination
  */
-export async function askTravelAssistant(question, destinationContext = null, customKey = null) {
+export async function askTravelAssistant(
+  question,
+  destinationContext = null,
+  customKey = null,
+) {
   const apiKey = getGeminiApiKey(customKey);
 
   if (apiKey) {
@@ -20,7 +24,7 @@ export async function askTravelAssistant(question, destinationContext = null, cu
 
       let systemPrompt = `You are Aura, an expert, enthusiastic, and highly knowledgeable personal travel assistant. 
 Answer concisely with warmth, structured bullet points, and practical local advice.`;
-      
+
       if (destinationContext) {
         systemPrompt += ` The user is currently exploring ${destinationContext.name}, ${destinationContext.country}. (Overview: ${destinationContext.overview})`;
       }
@@ -28,23 +32,29 @@ Answer concisely with warmth, structured bullet points, and practical local advi
       const fullPrompt = `${systemPrompt}\n\nUser Question: ${question}`;
       const result = await model.generateContent(fullPrompt);
       const text = result.response.text();
-      return { text, provider: 'Google Gemini AI' };
+      return { text, provider: "Google Gemini AI" };
     } catch (err) {
-      console.warn('Gemini API query failed, using AI assistant fallback:', err);
+      console.warn(
+        "Gemini API query failed, using AI assistant fallback:",
+        err,
+      );
     }
   }
 
   // Smart client-side travel AI fallback when key is not configured or fails
   return {
     text: generateFallbackChatResponse(question, destinationContext),
-    provider: 'TravelAI Assistant (Demo Mode)'
+    provider: "TravelAI Assistant (Demo Mode)",
   };
 }
 
 /**
  * Generate a structured Day-by-Day itinerary using Gemini AI or structured fallback
  */
-export async function generateItinerary({ destination, days, travelStyle, budget, interests }, customKey = null) {
+export async function generateItinerary(
+  { destination, days, travelStyle, budget, interests },
+  customKey = null,
+) {
   const apiKey = getGeminiApiKey(customKey);
 
   if (apiKey) {
@@ -55,9 +65,9 @@ export async function generateItinerary({ destination, days, travelStyle, budget
       const prompt = `Generate a detailed ${days}-day travel itinerary for ${destination.name}, ${destination.country}.
 Traveler preferences:
 - Duration: ${days} days
-- Travel Style: ${travelStyle || 'Balanced Explorer'}
-- Budget Level: ${budget || 'Moderate'}
-- Main Interests: ${interests?.join(', ') || 'Culture, Food, Highlights'}
+- Travel Style: ${travelStyle || "Balanced Explorer"}
+- Budget Level: ${budget || "Moderate"}
+- Main Interests: ${interests?.join(", ") || "Culture, Food, Highlights"}
 
 Return ONLY a valid JSON array matching this exact schema, without markdown code block ticks if possible, or inside a json block:
 [
@@ -93,22 +103,33 @@ Return ONLY a valid JSON array matching this exact schema, without markdown code
 
       const result = await model.generateContent(prompt);
       const text = result.response.text();
-      
+
       // Clean potential markdown wrapping
-      const cleaned = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+      const cleaned = text
+        .replace(/```json/gi, "")
+        .replace(/```/g, "")
+        .trim();
       const parsed = JSON.parse(cleaned);
       if (Array.isArray(parsed)) {
-        return { plan: parsed, provider: 'Google Gemini AI' };
+        return { plan: parsed, provider: "Google Gemini AI" };
       }
     } catch (err) {
-      console.warn('Gemini Itinerary Generation failed, using structured fallback generator:', err);
+      console.warn(
+        "Gemini Itinerary Generation failed, using structured fallback generator:",
+        err,
+      );
     }
   }
 
   // Structured Day-by-Day fallback generator
   return {
-    plan: generateStructuredFallbackItinerary(destination, days, travelStyle, interests),
-    provider: 'TravelAI Planner (Demo Mode)'
+    plan: generateStructuredFallbackItinerary(
+      destination,
+      days,
+      travelStyle,
+      interests,
+    ),
+    provider: "TravelAI Planner (Demo Mode)",
   };
 }
 
@@ -117,90 +138,156 @@ Return ONLY a valid JSON array matching this exact schema, without markdown code
  */
 function generateFallbackChatResponse(question, dest) {
   const q = question.toLowerCase();
-  const name = dest ? dest.name : 'this destination';
-  const country = dest ? dest.country : 'the area';
+  const name =
+    dest?.name ||
+    extractDestinationFromQuestion(question) ||
+    "this destination";
+  const country = dest ? dest.country : "the area";
+  if (
+    q.includes("pack") ||
+    q.includes("packing") ||
+    q.includes("bring") ||
+    q.includes("luggage")
+  ) {
+    return `For **${name}**, here are some useful packing essentials:
 
-  if (q.includes('long') || q.includes('days') || q.includes('stay')) {
-    return `For **${name}**, I recommend staying **${dest?.quickStats?.idealStay || '3 to 5 days'}**. 
-This allows you to comfortably explore the major landmarks like ${dest?.famousPlaces?.[0]?.name || 'top attractions'} without feeling rushed!`;
+- Comfortable walking shoes for sightseeing.
+- Clothes suitable for the season and weather.
+- A compact umbrella or light rain jacket if needed.
+- Phone charger and suitable power adapter.
+- A small day bag for daily exploration.
+- Passport, ID, tickets, and important booking details.
+
+**Pro tip:** Check the weather forecast before your trip and adjust your clothing accordingly.`;
   }
 
-  if (q.includes('when') || q.includes('season') || q.includes('weather') || q.includes('time to visit')) {
-    return `The best time to visit **${name}** is during **${dest?.bestTimeToVisit || 'Spring and Autumn'}**. 
+  if (q.includes("long") || q.includes("days") || q.includes("stay")) {
+    return `For **${name}**, I recommend staying **${dest?.quickStats?.idealStay || "3 to 5 days"}**. 
+This allows you to comfortably explore the major landmarks like ${dest?.famousPlaces?.[0]?.name || "top attractions"} without feeling rushed!`;
+  }
+
+  if (
+    q.includes("when") ||
+    q.includes("season") ||
+    q.includes("weather") ||
+    q.includes("time to visit")
+  ) {
+    return `The best time to visit **${name}** is during **${dest?.bestTimeToVisit || "Spring and Autumn"}**. 
 During these months, you'll enjoy mild temperatures and fewer peak tourism crowds!`;
   }
 
-  if (q.includes('food') || q.includes('eat') || q.includes('drink') || q.includes('dish')) {
+  if (
+    q.includes("food") ||
+    q.includes("eat") ||
+    q.includes("drink") ||
+    q.includes("dish")
+  ) {
     return `When in **${name}**, make sure to try the local culinary specialties! 
 - Explore traditional local markets and eateries.
 - Sample regional dishes and street food snacks.
 - Always check where locals gather during lunch hour for authentic flavors!`;
   }
 
-  if (q.includes('see') || q.includes('visit') || q.includes('do') || q.includes('place')) {
-    const places = dest?.famousPlaces?.map(p => `• **${p.name}**: ${p.description}`).join('\n') || '• Top historic landmarks and scenic nature spots.';
+  if (
+    q.includes("see") ||
+    q.includes("visit") ||
+    q.includes("do") ||
+    q.includes("place")
+  ) {
+    const places =
+      dest?.famousPlaces
+        ?.map((p) => `• **${p.name}**: ${p.description}`)
+        .join("\n") || "• Top historic landmarks and scenic nature spots.";
     return `Here are the top places you shouldn't miss in **${name}**:\n\n${places}`;
   }
 
   return `Visiting **${name}, ${country}** is an incredible experience! 
-- **Highlights**: ${dest?.tagline || 'Rich culture, history, and stunning views.'}
-- **Currency**: ${dest?.quickStats?.currency || 'Local Currency'}
-- **Pro Tip**: ${dest?.localTips?.[0] || 'Plan ahead for popular attraction entries!'}`;
+- **Highlights**: ${dest?.tagline || "Rich culture, history, and stunning views."}
+- **Currency**: ${dest?.quickStats?.currency || "Local Currency"}
+- **Pro Tip**: ${dest?.localTips?.[0] || "Plan ahead for popular attraction entries!"}`;
 }
 
 /**
  * Intelligent Fallback Day-by-Day Itinerary Engine
  */
-function generateStructuredFallbackItinerary(dest, daysCount, style, interests) {
+function generateStructuredFallbackItinerary(
+  dest,
+  daysCount,
+  style,
+  interests,
+) {
   const numDays = Math.min(Math.max(parseInt(daysCount) || 3, 1), 7);
   const places = dest?.famousPlaces || [];
-  const name = dest ? dest.name : 'Destination';
+  const name = dest ? dest.name : "Destination";
 
   const dayThemes = [
-    'Arrival & Icon Highlights',
-    'Cultural Immersion & Hidden Gems',
-    'Nature & Scenic Panoramas',
-    'Local Markets & Culinary Adventure',
-    'Historic Heritage & Museums',
-    'Relaxation & Coastal Views',
-    'Grand Farewell & Shopping'
+    "Arrival & Icon Highlights",
+    "Cultural Immersion & Hidden Gems",
+    "Nature & Scenic Panoramas",
+    "Local Markets & Culinary Adventure",
+    "Historic Heritage & Museums",
+    "Relaxation & Coastal Views",
+    "Grand Farewell & Shopping",
   ];
 
   const plan = [];
 
   for (let i = 1; i <= numDays; i++) {
-    const p1 = places[(i - 1) % places.length] || { name: `${name} Landmarks`, description: `Explore central ${name} historical landmarks.` };
-    const p2 = places[i % places.length] || { name: `${name} Cultural Quarter`, description: 'Stroll through traditional streets and craft shops.' };
+    const p1 = places[(i - 1) % places.length] || {
+      name: `${name} Landmarks`,
+      description: `Explore central ${name} historical landmarks.`,
+    };
+    const p2 = places[i % places.length] || {
+      name: `${name} Cultural Quarter`,
+      description: "Stroll through traditional streets and craft shops.",
+    };
 
     plan.push({
       day: i,
       theme: dayThemes[(i - 1) % dayThemes.length],
       morning: {
         title: `Morning Exploration: ${p1.name}`,
-        description: p1.description || `Visit ${p1.name} during early hours for optimal lighting and lower crowds.`,
+        description:
+          p1.description ||
+          `Visit ${p1.name} during early hours for optimal lighting and lower crowds.`,
         location: p1.name,
-        duration: p1.recommendedDuration || '2.5 hours',
-        estimatedCost: dest?.budget === '$$$$' ? '$25 - $40' : '$10 - $20',
-        insiderTip: dest?.localTips?.[0] || 'Arrive early to beat morning tour buses.'
+        duration: p1.recommendedDuration || "2.5 hours",
+        estimatedCost: dest?.budget === "$$$$" ? "$25 - $40" : "$10 - $20",
+        insiderTip:
+          dest?.localTips?.[0] || "Arrive early to beat morning tour buses.",
       },
       afternoon: {
         title: `Afternoon Walk & Local Lunch`,
         description: `Enjoy an authentic regional lunch at a popular local café near ${p2.name}, followed by guided exploration.`,
         location: `${p2.name} District`,
-        duration: '3 hours',
-        estimatedCost: dest?.budget === '$$$$' ? '$35 - $60' : '$15 - $30',
-        insiderTip: 'Try the house daily lunch special for authentic regional flavors.'
+        duration: "3 hours",
+        estimatedCost: dest?.budget === "$$$$" ? "$35 - $60" : "$15 - $30",
+        insiderTip:
+          "Try the house daily lunch special for authentic regional flavors.",
       },
       evening: {
         title: `Evening Sunset & Promenade Stroll`,
         description: `Cap off Day ${i} with sunset viewpoints, ambient outdoor dining, and evening street atmosphere.`,
         location: `${name} Waterfront / City Center`,
-        duration: '2.5 hours',
-        estimatedCost: '$25 - $50',
-        insiderTip: 'Reserve sunset table dining at least one day in advance.'
-      }
+        duration: "2.5 hours",
+        estimatedCost: "$25 - $50",
+        insiderTip: "Reserve sunset table dining at least one day in advance.",
+      },
     });
   }
 
   return plan;
+}
+function extractDestinationFromQuestion(question) {
+  const match = question.match(
+    /\b(?:for|in|to|at|around|visit|visiting)\s+([A-Za-z][A-Za-z\s-]{1,40})/i,
+  );
+
+  if (!match) return null;
+
+  return match[1]
+    .trim()
+    .replace(/[?.!,]+$/, "")
+    .replace(/\b(please|today|tomorrow|this week)\b.*$/i, "")
+    .trim();
 }
