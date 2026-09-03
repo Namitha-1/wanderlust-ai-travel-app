@@ -3,7 +3,7 @@
 A modern, highly-aesthetic React web application built for the **Design Esthetics** Front-End Developer Assessment. The application helps users explore global destinations, view real-time weather, discover famous places with rich visual presentation, utilize location awareness, chat with an AI travel assistant (powered by Google Gemini API), and generate visual day-by-day trip itineraries.
 
 🔗 **Live Application**: [https://travel-app-designesthetics.vercel.app](https://travel-app-designesthetics.vercel.app)  
-📁 **GitHub Repository**: [https://github.com/Namitha-1/travel-app-designesthetics](https://github.com/Namitha-1/travel-app-designesthetics)
+📁 **GitHub Repository**: [https://github.com/Namitha-1/travel-app-designEsthetics](https://github.com/Namitha-1/travel-app-designEsthetics)
 
 ---
 
